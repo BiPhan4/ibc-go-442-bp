@@ -1,11 +1,14 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
 
 	"github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/host/types"
+	"github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/logger"
 	icatypes "github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/types"
 	channeltypes "github.com/cosmos/ibc-go/v4/modules/core/04-channel/types"
 )
@@ -15,10 +18,19 @@ import (
 func (k Keeper) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet) ([]byte, error) {
 	var data icatypes.InterchainAccountPacketData
 
+	logger.InitLogger()
+
 	if err := icatypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
+
+		logger.LogError("Error occurred during UnmarshalJSON: ", err.Error())
+		fmt.Println("Error occurred during UnmarshalJSON at OnRecvPacket")
+
 		// UnmarshalJSON errors are indeterminate and therefore are not wrapped and included in failed acks
 		return nil, sdkerrors.Wrapf(icatypes.ErrUnknownDataType, "cannot unmarshal ICS-27 interchain account packet data")
 	}
+
+	logger.LogInfo("packet data successfully marshalled")
+	fmt.Println("packet data successfully marshalled")
 
 	switch data.Type {
 	case icatypes.EXECUTE_TX:
