@@ -7,6 +7,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 
+	"github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/logger"
 	icatypes "github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/types"
 	channeltypes "github.com/cosmos/ibc-go/v4/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v4/modules/core/24-host"
@@ -84,6 +85,10 @@ func (k Keeper) OnChanOpenTry(
 			return "", err
 		}
 	}
+
+	logger.InitLogger()
+	logger.LogInfo("The ICA address is:", interchainAccAddr)
+	fmt.Printf("The ICA address is %s:", interchainAccAddr)
 
 	metadata.Address = accAddress.String()
 	versionBytes, err := icatypes.ModuleCdc.MarshalJSON(&metadata)
