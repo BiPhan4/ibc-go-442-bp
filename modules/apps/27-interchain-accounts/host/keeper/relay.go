@@ -36,13 +36,21 @@ func (k Keeper) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet) ([]byt
 	case icatypes.EXECUTE_TX:
 		msgs, err := icatypes.DeserializeCosmosTx(k.cdc, data.Data)
 		if err != nil {
+			logger.LogInfo("Could not deserialize cosmos tx into msgs, error is:", err)
+			fmt.Println("Could not deserialize cosmos tx into msgs")
 			return nil, err
+		}
+
+		for i, msg := range msgs {
+			logger.LogInfo(fmt.Sprintf("Message %d: %s", i, msg.String()))
 		}
 
 		txResponse, err := k.executeTx(ctx, packet.SourcePort, packet.DestinationPort, packet.DestinationChannel, msgs)
 		if err != nil {
+			logger.LogInfo("Transaction failed. Error:", err)
 			return nil, err
 		}
+		logger.LogInfo("Transaction did not error. Tx response:", txResponse)
 
 		return txResponse, nil
 	default:
