@@ -116,7 +116,18 @@ func (k Keeper) authenticateTx(ctx sdk.Context, msgs []sdk.Msg, connectionID, po
 		return sdkerrors.Wrapf(icatypes.ErrInterchainAccountNotFound, "failed to retrieve interchain account on port %s", portID)
 	}
 
+	logger.InitLogger()
+	logger.LogInfo("interchainAccountAddr is:", interchainAccountAddr)
+
 	allowMsgs := k.GetAllowMessages(ctx)
+
+	for i, allowMsg := range allowMsgs {
+		logger.LogInfo(fmt.Sprintf("ICA Host Allowed message %d: %s", i, allowMsg))
+	}
+
+	// Based on the below code, how could the wild card of "*" possible work to allow all messages from all modules?
+	// Does this wild card only work for latest ibc-go?
+
 	for _, msg := range msgs {
 		if !types.ContainsMsgType(allowMsgs, msg) {
 			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "message type not allowed: %s", sdk.MsgTypeURL(msg))
