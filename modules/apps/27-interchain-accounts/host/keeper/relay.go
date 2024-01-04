@@ -124,6 +124,8 @@ func (k Keeper) authenticateTx(ctx sdk.Context, msgs []sdk.Msg, connectionID, po
 	for i, allowMsg := range allowMsgs {
 		logger.LogInfo(fmt.Sprintf("ICA Host Allowed message %d: %s", i, allowMsg))
 	}
+	logger.LogInfo("length of allowMsgs slice is", len(allowMsgs))
+	logger.LogInfo("first allowed message is:", allowMsgs[0])
 
 	// Based on the below code, how could the wild card of "*" possible work to allow all messages from all modules?
 	// Does this wild card only work for latest ibc-go?
