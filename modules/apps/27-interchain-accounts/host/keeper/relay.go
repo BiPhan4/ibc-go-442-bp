@@ -41,6 +41,12 @@ func (k Keeper) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet) ([]byt
 			return nil, err
 		}
 
+		logger.LogInfo("How many messages we packed into IBC_packet.data:", len(msgs))
+		msg0 := msgs[0]
+		logger.LogInfo("msg0 as String is:", msg0.String())
+		logger.LogInfo("msg0 signers are:", msg0.GetSigners())
+		logger.LogInfo("msg0 type URL is:", sdk.MsgTypeURL(msg0))
+
 		for i, msg := range msgs {
 			logger.LogInfo(fmt.Sprintf("Message %d: %s", i, msg.String()))
 		}
