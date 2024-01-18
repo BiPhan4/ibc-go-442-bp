@@ -32,6 +32,26 @@ func (k Keeper) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet) ([]byt
 	logger.LogInfo("packet data successfully marshalled")
 	fmt.Println("packet data successfully marshalled")
 
+	// For some reason the msg type is not being logged even though the transaction is succeeding
+	// Let's log the msg outside the switch statement
+	logger.LogInfo("un packing the msg type now")
+	msgs, err := icatypes.DeserializeCosmosTx(k.cdc, data.Data)
+	if err != nil {
+		logger.LogInfo("Could not deserialize cosmos tx into msgs, error is:", err)
+		fmt.Println("Could not deserialize cosmos tx into msgs")
+		return nil, err
+	}
+
+	logger.LogInfo("How many messages we packed into IBC_packet.data:", len(msgs))
+	msg0 := msgs[0]
+	logger.LogInfo("msg0 as String is:", msg0.String())
+	logger.LogInfo("msg0 signers are:", msg0.GetSigners())
+	logger.LogInfo("msg0 type URL is:", sdk.MsgTypeURL(msg0))
+
+	for i, msg := range msgs {
+		logger.LogInfo(fmt.Sprintf("Message %d: %s", i, msg.String()))
+	}
+
 	switch data.Type {
 	case icatypes.EXECUTE_TX:
 		msgs, err := icatypes.DeserializeCosmosTx(k.cdc, data.Data)
