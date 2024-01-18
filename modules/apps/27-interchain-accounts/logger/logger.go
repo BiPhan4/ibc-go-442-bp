@@ -3,7 +3,6 @@ package logger
 import (
 	"log"
 	"os"
-	"time"
 )
 
 var (
@@ -13,6 +12,7 @@ var (
 
 func InitLogger() {
 	path := "logs/"
+	fileName := "ica_host.log"
 
 	// Create directory if it doesn't exist
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -22,11 +22,8 @@ func InitLogger() {
 		}
 	}
 
-	// Using current time to create a unique file name
-	currentTime := time.Now()
-	fileName := path + "ica_host_" + currentTime.Format("2006-01-02_15-04-05") + ".log"
-
-	file, err := os.Create(fileName)
+	// Open the file in append mode, create it if it doesn't exist
+	file, err := os.OpenFile(path+fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
