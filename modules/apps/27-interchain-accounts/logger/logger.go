@@ -3,6 +3,7 @@ package logger
 import (
 	"log"
 	"os"
+	"time"
 )
 
 var (
@@ -21,7 +22,11 @@ func InitLogger() {
 		}
 	}
 
-	file, err := os.Create(path + "ica_host.log")
+	// Using current time to create a unique file name
+	currentTime := time.Now()
+	fileName := path + "ica_host_" + currentTime.Format("2006-01-02_15-04-05") + ".log"
+
+	file, err := os.Create(fileName)
 	if err != nil {
 		log.Fatal(err)
 	}
