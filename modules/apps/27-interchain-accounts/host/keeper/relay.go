@@ -44,7 +44,7 @@ func (k Keeper) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet) ([]byt
 
 	logger.LogInfo("How many messages we packed into IBC_packet.data:", len(msgs))
 	msg0 := msgs[0]
-	logger.LogInfo("msg0 as String is:", msg0.String())
+	logger.LogInfo("msg0 as String is:", msg0.String()) // we can probably parse this string to obtain the protobuf.decode() value here
 	logger.LogInfo("msg0 signers are:", msg0.GetSigners())
 	logger.LogInfo("msg0 type URL is:", sdk.MsgTypeURL(msg0))
 

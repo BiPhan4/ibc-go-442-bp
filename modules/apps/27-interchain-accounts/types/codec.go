@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/logger"
 )
 
 // ModuleCdc references the global interchain accounts module codec. Note, the codec
@@ -61,10 +62,16 @@ func DeserializeCosmosTx(cdc codec.BinaryCodec, data []byte) ([]sdk.Msg, error) 
 		return nil, sdkerrors.Wrap(ErrInvalidCodec, "only ProtoCodec is supported for receiving messages on the host chain")
 	}
 
+	logger.InitLogger()
+
 	var cosmosTx CosmosTx
 	if err := cdc.Unmarshal(data, &cosmosTx); err != nil {
+		logger.LogInfo("I think we error because the msg inside data is not wraped by the 'Any' msg type?")
+		logger.LogInfo("The error from cdc.Unmarshal() is:", err)
 		return nil, err
 	}
+
+	logger.LogInfo("Call stack did not make it this far")
 
 	msgs := make([]sdk.Msg, len(cosmosTx.Messages))
 
