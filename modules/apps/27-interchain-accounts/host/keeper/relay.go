@@ -164,6 +164,11 @@ func (k Keeper) authenticateTx(ctx sdk.Context, msgs []sdk.Msg, connectionID, po
 // Attempts to get the message handler from the router and if found will then execute the message.
 // If the message execution is successful, the proto marshaled message response will be returned.
 func (k Keeper) executeMsg(ctx sdk.Context, msg sdk.Msg) ([]byte, error) {
+
+	logger.InitLogger()
+	logger.LogInfo("the msg before it hits the handler is:", msg)
+	logger.LogInfo("As string the msg before it hits the handler is:", msg.String())
+
 	handler := k.msgRouter.Handler(msg)
 	if handler == nil {
 		return nil, icatypes.ErrInvalidRoute
